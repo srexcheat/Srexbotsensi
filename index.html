@@ -25,7 +25,6 @@
             color: #fff;
         }
 
-        /* Animated Background */
         .bg-glow {
             position: fixed;
             width: 100vw; height: 100vh;
@@ -47,7 +46,6 @@
             to { transform: translate(50%, 50%); }
         }
 
-        /* System Info */
         #sys-info {
             position: fixed;
             bottom: 20px; right: 20px;
@@ -63,7 +61,6 @@
         }
         #sys-info span { color: var(--neon-red); font-weight: bold; }
 
-        /* Smooth Loader */
         #loader {
             position: fixed;
             inset: 0; background: #000; z-index: 9999;
@@ -74,7 +71,6 @@
         .loader-text { margin-top: 20px; font-weight: 900; letter-spacing: 8px; color: var(--neon-red); text-transform: uppercase; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* Main Panel */
         #bot-panel {
             width: 95%; max-width: 420px; height: 85vh;
             background: var(--glass-bg);
@@ -102,11 +98,9 @@
         #chat-area { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
         #chat-area::-webkit-scrollbar { display: none; }
 
-        /* Message Bubbles */
         .msg-wrapper { display: flex; flex-direction: column; max-width: 88%; animation: msgPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .bot-wrapper { align-self: flex-start; }
         .user-wrapper { align-self: flex-end; align-items: flex-end; }
-        
         .rtl-layout { direction: rtl; }
 
         .label { font-size: 10px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
@@ -117,9 +111,11 @@
         .bot-msg { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); border-top-left-radius: 4px; }
         .user-msg { background: var(--user-gradient); border-top-right-radius: 4px; box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3); }
 
+        .hud-msg { cursor: pointer; border: 1px dashed var(--neon-red); text-align: center; font-weight: bold; background: rgba(255, 51, 51, 0.1) !important; }
+        .hud-msg:active { transform: scale(0.98); }
+
         @keyframes msgPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-        /* Choice Chips */
         .chip-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .chip { 
             background: rgba(255, 51, 51, 0.05); border: 1px solid var(--neon-red); color: #fff; 
@@ -129,7 +125,6 @@
         }
         .chip:hover { background: var(--neon-red); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 51, 51, 0.3); }
 
-        /* Sensitivity Card */
         .sensi-card { 
             background: #000; border: 1px solid var(--neon-red); border-radius: 20px; 
             padding: 20px; margin-top: 15px; position: relative; overflow: hidden;
@@ -186,10 +181,10 @@
         const langPick = document.getElementById('lang-pick');
 
         const translations = {
-            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over" },
-            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar" },
-            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer" },
-            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد" }
+            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over", hudCreate: "Create HUD", fingerQuest: "How many fingers do you play with?", copyMsg: "HUD Copied to Clipboard!" },
+            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar", hudCreate: "Criar HUD", fingerQuest: "Com quantos dedos você joga?", copyMsg: "HUD copiado!" },
+            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer", hudCreate: "Créer HUD", fingerQuest: "Avec combien de doigts jouez-vous ?", copyMsg: "HUD Copié !" },
+            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد", hudCreate: "إنشاء HUD", fingerQuest: "بكم إصبع تلعب؟", copyMsg: "تم نسخ الـ HUD!" }
         };
 
         window.onload = () => {
@@ -200,11 +195,22 @@
             }, 1800);
         };
 
-        function addBotMsg(text, chips = []) {
+        function addBotMsg(text, chips = [], isHudCode = false) {
             const isAr = langPick.value === 'ar';
             const wrapper = document.createElement('div');
             wrapper.className = `msg-wrapper bot-wrapper ${isAr ? 'rtl-layout' : ''}`;
-            wrapper.innerHTML = `<div class="label bot-label">🤖 t9bot by @srexffx</div><div class="msg bot-msg">${text}</div>`;
+            
+            let msgContent = `<div class="label bot-label">🤖 t9bot by @srexffx</div><div class="msg bot-msg ${isHudCode ? 'hud-msg' : ''}">${text}</div>`;
+            wrapper.innerHTML = msgContent;
+
+            if (isHudCode) {
+                wrapper.querySelector('.hud-msg').onclick = () => {
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert(translations[langPick.value].copyMsg);
+                    });
+                };
+            }
+
             chat.appendChild(wrapper);
 
             if (chips.length > 0) {
@@ -235,7 +241,7 @@
             chat.innerHTML = "";
             const l = translations[langPick.value];
             if(langPick.value === 'ar') chat.classList.add('rtl-layout'); else chat.classList.remove('rtl-layout');
-            addBotMsg(l.welcome, [l.start]);
+            addBotMsg(l.welcome, [l.start, l.hudCreate]);
         }
 
         function handleAction(action) {
@@ -244,6 +250,14 @@
             setTimeout(() => {
                 if (action === l.start || action === l.restart) {
                     addBotMsg(l.brand, ["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"]);
+                } else if (action === l.hudCreate) {
+                    addBotMsg(l.fingerQuest, ["2F", "3F", "4F"]);
+                } else if (action === "2F") {
+                    addBotMsg("#FFHUDT6O3jhr5qTtPo7eM", [l.restart], true);
+                } else if (action === "3F") {
+                    addBotMsg("#FFHUDT6O3jhr5qTtPo7eO", [l.restart], true);
+                } else if (action === "4F") {
+                    addBotMsg("#FFHUDT6O3jhr5qTtPo7eN", [l.restart], true);
                 } else if (["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"].includes(action)) {
                     window.userBrand = action;
                     const spd = langPick.value === 'en' ? ["High", "Slow"] : (langPick.value === 'br' ? ["Alta", "Lenta"] : (langPick.value === 'fr' ? ["Élevée", "Lente"] : ["عالية", "بطيئة"]));
@@ -285,6 +299,8 @@
                 ar: ["عام", "نقطة حمراء", "عدسة 2X", "عدسة 4X", "قناص", "نظرة حرة", "DPI"]
             }[langPick.value];
 
+            const l = translations[langPick.value];
+
             addBotMsg(`🤖 **${brand.toUpperCase()} SETTINGS**
                 <div class="sensi-card">
                     <div class="row"><span>${labels[0]}</span> <span class="val">${g}</span></div>
@@ -295,13 +311,12 @@
                     <div class="row"><span>${labels[5]}</span> <span class="val">${cam}</span></div>
                     <div class="row"><span>${labels[6]}</span> <span class="val">${dpi}</span></div>
                 </div>
-                <p style="font-size:10px; text-align:center; margin-top:10px; color: #666;">Official SREX FF Config</p>`, [translations[langPick.value].restart]);
+                <p style="font-size:10px; text-align:center; margin-top:10px; color: #666;">Official SREX FF Config</p>`, [l.hudCreate, l.restart]);
         }
 
         document.getElementById('reset-btn').onclick = startBot;
         langPick.onchange = startBot;
 
-        // --- UPDATED SYSTEM INFO LOGIC FOR IPHONE ---
         if (navigator.getBattery) {
             navigator.getBattery().then(b => {
                 const up = () => document.getElementById('info-batt').innerText = Math.round(b.level * 100) + "%";
