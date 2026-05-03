@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t9bot 🤖 SREXFFX</title>
+    <style>
+        :root {
+            --neon-red: #ff3333;
+            --accent-glow: rgba(255, 51, 51, 0.4);
+            --glass-bg: rgba(10, 10, 10, 0.85);
+            --user-gradient: linear-gradient(135deg, #ff4d4d 0%, #b30000 100%);
+            --panel-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            background: #000;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        /* Animated Background */
+        .bg-glow {
+            position: fixed;
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 50%, #1a0505 0%, #000 100%);
+            z-index: -1;
+        }
+
+        .bg-orb {
+            position: absolute;
+            width: 300px; height: 300px;
+            background: var(--accent-glow);
+            filter: blur(100px);
+            border-radius: 50%;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-50%, -50%); }
+            to { transform: translate(50%, 50%); }
+        }
+
+        /* System Info */
+        #sys-info {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--panel-border);
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        #sys-info span { color: var(--neon-red); font-weight: bold; }
+
+        /* Smooth Loader */
+        #loader {
+            position: fixed;
+            inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .loader-bot { font-size: 4rem; filter: drop-shadow(0 0 15px var(--neon-red)); animation: float 2s infinite ease-in-out; }
+        .loader-text { margin-top: 20px; font-weight: 900; letter-spacing: 8px; color: var(--neon-red); text-transform: uppercase; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* Main Panel */
+        #bot-panel {
+            width: 95%; max-width: 420px; height: 85vh;
+            background: var(--glass-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 35px;
+            display: none; flex-direction: column;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #panel-header {
+            padding: 20px 25px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--panel-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .lang-selector select {
+            background: #1a1a1a; color: #fff; border: 1px solid #333;
+            border-radius: 10px; padding: 5px 10px; cursor: pointer; outline: none;
+        }
+
+        #chat-area { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
+        #chat-area::-webkit-scrollbar { display: none; }
+
+        /* Better Message Bubbles */
+        .msg-wrapper { display: flex; flex-direction: column; max-width: 88%; animation: msgPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bot-wrapper { align-self: flex-start; }
+        .user-wrapper { align-self: flex-end; align-items: flex-end; }
+        
+        .rtl-layout { direction: rtl; }
+
+        .label { font-size: 10px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .bot-label { color: #666; margin-left: 5px; }
+        .user-label { color: #fff; background: var(--neon-red); padding: 2px 8px; border-radius: 6px; margin-right: 5px; }
+
+        .msg { padding: 14px 18px; border-radius: 22px; font-size: 15px; line-height: 1.5; position: relative; }
+        .bot-msg { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); border-top-left-radius: 4px; }
+        .user-msg { background: var(--user-gradient); border-top-right-radius: 4px; box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3); }
+
+        @keyframes msgPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* Interactive Choice Chips */
+        .chip-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .chip { 
+            background: rgba(255, 51, 51, 0.05); border: 1px solid var(--neon-red); color: #fff; 
+            padding: 10px 20px; border-radius: 50px; font-size: 13px; cursor: pointer; 
+            font-weight: 600; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(5px);
+        }
+        .chip:hover { background: var(--neon-red); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 51, 51, 0.3); }
+
+        /* Sensitivity Card Design */
+        .sensi-card { 
+            background: #000; border: 1px solid var(--neon-red); border-radius: 20px; 
+            padding: 20px; margin-top: 15px; position: relative; overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(255,51,51,0.1);
+        }
+        .sensi-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, var(--neon-red), transparent 30%);
+            animation: rotate 4s linear infinite; opacity: 0.1;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .row { display: flex; justify-content: space-between; margin: 8px 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; position: relative; z-index: 1; }
+        .val { color: var(--neon-red); font-weight: 900; font-size: 16px; text-shadow: 0 0 8px var(--accent-glow); }
+
+        #reset-btn { background: transparent; border: 1px solid #333; color: #888; padding: 6px 15px; border-radius: 12px; font-size: 11px; font-weight: 700; transition: 0.3s; }
+        #reset-btn:hover { border-color: var(--neon-red); color: var(--neon-red); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow">
+        <div class="bg-orb"></div>
+    </div>
+
+    <div id="sys-info">
+        OS: <span id="info-brand">...</span> | PWR: <span id="info-batt">--%</span>
+    </div>
+
+    <div id="loader">
+        <div class="loader-bot">🤖</div>
+        <div class="loader-text">t9bot</div>
+    </div>
+
+    <div id="bot-panel">
+        <div id="panel-header">
+            <button id="reset-btn">🔄 RESET</button>
+            <div class="lang-selector">
+                <select id="lang-pick">
+                    <option value="en">🇺🇸 English</option>
+                    <option value="br">🇧🇷 Brazilian</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="ar">🇸🇦 العربية</option>
+                </select>
+            </div>
+        </div>
+        <div id="chat-area"></div>
+    </div>
+
+    <script>
+        const chat = document.getElementById('chat-area');
+        const panel = document.getElementById('bot-panel');
+        const loader = document.getElementById('loader');
+        const langPick = document.getElementById('lang-pick');
+
+        const translations = {
+            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over" },
+            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar" },
+            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer" },
+            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد" }
+        };
+
+        window.onload = () => {
+            setTimeout(() => {
+                loader.style.transform = 'translateY(-100%)';
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; panel.style.display = 'flex'; startBot(); }, 600);
+            }, 1800);
+        };
+
+        function addBotMsg(text, chips = []) {
+            const isAr = langPick.value === 'ar';
+            const wrapper = document.createElement('div');
+            wrapper.className = `msg-wrapper bot-wrapper ${isAr ? 'rtl-layout' : ''}`;
+            wrapper.innerHTML = `<div class="label bot-label">🤖 t9bot by @srexffx</div><div class="msg bot-msg">${text}</div>`;
+            chat.appendChild(wrapper);
+
+            if (chips.length > 0) {
+                const container = document.createElement('div');
+                container.className = `chip-container ${isAr ? 'rtl-layout' : ''}`;
+                chips.forEach(chipText => {
+                    const btn = document.createElement('button');
+                    btn.className = 'chip';
+                    btn.innerText = chipText;
+                    btn.onclick = () => { container.remove(); handleAction(chipText); };
+                    container.appendChild(btn);
+                });
+                chat.appendChild(container);
+            }
+            chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+        }
+
+        function addUserMsg(text) {
+            const isAr = langPick.value === 'ar';
+            const wrapper = document.createElement('div');
+            wrapper.className = `msg-wrapper user-wrapper ${isAr ? 'rtl-layout' : ''}`;
+            wrapper.innerHTML = `<div class="label user-label">👤 You</div><div class="msg user-msg">${text}</div>`;
+            chat.appendChild(wrapper);
+            chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+        }
+
+        function startBot() {
+            chat.innerHTML = "";
+            const l = translations[langPick.value];
+            if(langPick.value === 'ar') chat.classList.add('rtl-layout'); else chat.classList.remove('rtl-layout');
+            addBotMsg(l.welcome, [l.start]);
+        }
+
+        function handleAction(action) {
+            addUserMsg(action);
+            const l = translations[langPick.value];
+            setTimeout(() => {
+                if (action === l.start || action === l.restart) {
+                    addBotMsg(l.brand, ["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"]);
+                } else if (["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"].includes(action)) {
+                    window.userBrand = action;
+                    const spd = langPick.value === 'en' ? ["High", "Slow"] : (langPick.value === 'br' ? ["Alta", "Lenta"] : (langPick.value === 'fr' ? ["Élevée", "Lente"] : ["عالية", "بطيئة"]));
+                    addBotMsg(l.speed, spd);
+                } else {
+                    addBotMsg(l.applying);
+                    setTimeout(() => generateSensi(action), 1200);
+                }
+            }, 600);
+        }
+
+        function generateSensi(speedType) {
+            let isHigh = speedType.match(/High|Alta|Élevée|عالية/);
+            let brand = window.userBrand;
+            let g, r, x2, x4, snp, cam, dpi;
+            
+            // BRAND SPECIFIC LOGIC
+            if (brand === "iPhone") {
+                // iPhones: Lower base range (iOS scaling), strictly NO DPI
+                g = isHigh ? (95 + Math.floor(Math.random()*5)) : (88 + Math.floor(Math.random()*4));
+                dpi = "NO DPI";
+            } else if (brand === "Samsung") {
+                // Samsung: High DPI support, broad sensitivity range
+                g = isHigh ? (182 + Math.floor(Math.random()*15)) : (140 + Math.floor(Math.random()*15));
+                dpi = isHigh ? (720 + Math.floor(Math.random()*180)) : (411 + Math.floor(Math.random()*100));
+            } else if (brand === "Xiaomi" || brand === "Redmi") {
+                // Xiaomi/Redmi: Precision based
+                g = isHigh ? (190 + Math.floor(Math.random()*10)) : (155 + Math.floor(Math.random()*10));
+                dpi = isHigh ? (650 + Math.floor(Math.random()*150)) : (390 + Math.floor(Math.random()*50));
+            } else {
+                // Other Androids (Oppo/Vivo)
+                g = isHigh ? (170 + Math.floor(Math.random()*20)) : (125 + Math.floor(Math.random()*20));
+                dpi = isHigh ? (550 + Math.floor(Math.random()*250)) : (360 + Math.floor(Math.random()*90));
+            }
+
+            r = g - 5; x2 = g - 8; x4 = g - 12; 
+            snp = isHigh ? (100 + Math.floor(Math.random()*20)) : (60 + Math.floor(Math.random()*20));
+            cam = 200; // Standardized for responsiveness
+
+            const labels = {
+                en: ["GENERAL", "RED DOT", "2X SCOPE", "4X SCOPE", "SNIPER", "FREE LOOK", "DPI"],
+                br: ["GERAL", "PONTO VERMELHO", "MIRA 2X", "MIRA 4X", "SNIPER", "OLHADINHA", "DPI"],
+                fr: ["GÉNÉRAL", "POINT ROUGE", "LUNETTE 2X", "LUNETTE 4X", "SNIPER", "REGARD LIBRE", "DPI"],
+                ar: ["عام", "نقطة حمراء", "عدسة 2X", "عدسة 4X", "قناص", "نظرة حرة", "DPI"]
+            }[langPick.value];
+
+            addBotMsg(`🤖 **${brand.toUpperCase()} SETTINGS**
+                <div class="sensi-card">
+                    <div class="row"><span>${labels[0]}</span> <span class="val">${g}</span></div>
+                    <div class="row"><span>${labels[1]}</span> <span class="val">${r}</span></div>
+                    <div class="row"><span>${labels[2]}</span> <span class="val">${x2}</span></div>
+                    <div class="row"><span>${labels[3]}</span> <span class="val">${x4}</span></div>
+                    <div class="row"><span>${labels[4]}</span> <span class="val">${snp}</span></div>
+                    <div class="row"><span>${labels[5]}</span> <span class="val">${cam}</span></div>
+                    <div class="row"><span>${labels[6]}</span> <span class="val">${dpi}</span></div>
+                </div>
+                <p style="font-size:10px; text-align:center; margin-top:10px; color: #666;">Official SREX FF Config</p>`, [translations[langPick.value].restart]);
+        }
+
+        document.getElementById('reset-btn').onclick = startBot;
+        langPick.onchange = startBot;
+
+        navigator.getBattery().then(b => {
+            const up = () => document.getElementById('info-batt').innerText = Math.round(b.level * 100) + "%";
+            up(); b.onlevelchange = up;
+        });
+        document.getElementById('info-brand').innerText = /iPhone/.test(navigator.userAgent) ? "IOS" : "ANDROID";
+    </script>
+</body>
+</html>
