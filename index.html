@@ -102,7 +102,7 @@
         #chat-area { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
         #chat-area::-webkit-scrollbar { display: none; }
 
-        /* Better Message Bubbles */
+        /* Message Bubbles */
         .msg-wrapper { display: flex; flex-direction: column; max-width: 88%; animation: msgPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .bot-wrapper { align-self: flex-start; }
         .user-wrapper { align-self: flex-end; align-items: flex-end; }
@@ -119,7 +119,7 @@
 
         @keyframes msgPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-        /* Interactive Choice Chips */
+        /* Choice Chips */
         .chip-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .chip { 
             background: rgba(255, 51, 51, 0.05); border: 1px solid var(--neon-red); color: #fff; 
@@ -129,7 +129,7 @@
         }
         .chip:hover { background: var(--neon-red); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 51, 51, 0.3); }
 
-        /* Sensitivity Card Design */
+        /* Sensitivity Card */
         .sensi-card { 
             background: #000; border: 1px solid var(--neon-red); border-radius: 20px; 
             padding: 20px; margin-top: 15px; position: relative; overflow: hidden;
@@ -145,7 +145,7 @@
         .row { display: flex; justify-content: space-between; margin: 8px 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; position: relative; z-index: 1; }
         .val { color: var(--neon-red); font-weight: 900; font-size: 16px; text-shadow: 0 0 8px var(--accent-glow); }
 
-        #reset-btn { background: transparent; border: 1px solid #333; color: #888; padding: 6px 15px; border-radius: 12px; font-size: 11px; font-weight: 700; transition: 0.3s; }
+        #reset-btn { background: transparent; border: 1px solid #333; color: #888; padding: 6px 15px; border-radius: 12px; font-size: 11px; font-weight: 700; transition: 0.3s; cursor: pointer; }
         #reset-btn:hover { border-color: var(--neon-red); color: var(--neon-red); }
     </style>
 </head>
@@ -260,28 +260,23 @@
             let brand = window.userBrand;
             let g, r, x2, x4, snp, cam, dpi;
             
-            // BRAND SPECIFIC LOGIC
             if (brand === "iPhone") {
-                // iPhones: Lower base range (iOS scaling), strictly NO DPI
                 g = isHigh ? (95 + Math.floor(Math.random()*5)) : (88 + Math.floor(Math.random()*4));
                 dpi = "NO DPI";
             } else if (brand === "Samsung") {
-                // Samsung: High DPI support, broad sensitivity range
                 g = isHigh ? (182 + Math.floor(Math.random()*15)) : (140 + Math.floor(Math.random()*15));
                 dpi = isHigh ? (720 + Math.floor(Math.random()*180)) : (411 + Math.floor(Math.random()*100));
             } else if (brand === "Xiaomi" || brand === "Redmi") {
-                // Xiaomi/Redmi: Precision based
                 g = isHigh ? (190 + Math.floor(Math.random()*10)) : (155 + Math.floor(Math.random()*10));
                 dpi = isHigh ? (650 + Math.floor(Math.random()*150)) : (390 + Math.floor(Math.random()*50));
             } else {
-                // Other Androids (Oppo/Vivo)
                 g = isHigh ? (170 + Math.floor(Math.random()*20)) : (125 + Math.floor(Math.random()*20));
                 dpi = isHigh ? (550 + Math.floor(Math.random()*250)) : (360 + Math.floor(Math.random()*90));
             }
 
             r = g - 5; x2 = g - 8; x4 = g - 12; 
             snp = isHigh ? (100 + Math.floor(Math.random()*20)) : (60 + Math.floor(Math.random()*20));
-            cam = 200; // Standardized for responsiveness
+            cam = 200;
 
             const labels = {
                 en: ["GENERAL", "RED DOT", "2X SCOPE", "4X SCOPE", "SNIPER", "FREE LOOK", "DPI"],
@@ -306,11 +301,20 @@
         document.getElementById('reset-btn').onclick = startBot;
         langPick.onchange = startBot;
 
-        navigator.getBattery().then(b => {
-            const up = () => document.getElementById('info-batt').innerText = Math.round(b.level * 100) + "%";
-            up(); b.onlevelchange = up;
-        });
-        document.getElementById('info-brand').innerText = /iPhone/.test(navigator.userAgent) ? "IOS" : "ANDROID";
+        // --- UPDATED SYSTEM INFO LOGIC FOR IPHONE ---
+        if (navigator.getBattery) {
+            navigator.getBattery().then(b => {
+                const up = () => document.getElementById('info-batt').innerText = Math.round(b.level * 100) + "%";
+                up(); b.onlevelchange = up;
+            });
+        } else {
+            document.getElementById('info-batt').innerText = "SECURED";
+        }
+
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        document.getElementById('info-brand').innerText = isIOS ? "IOS" : "ANDROID";
+
     </script>
 </body>
 </html>
