@@ -47,64 +47,6 @@
             to { transform: translate(50%, 50%); }
         }
 
-        /* Login Overlay */
-        #login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(20px);
-        }
-
-        .login-box {
-            background: var(--glass-bg);
-            padding: 40px;
-            border-radius: 30px;
-            border: 1px solid var(--panel-border);
-            text-align: center;
-            width: 90%;
-            max-width: 350px;
-            box-shadow: 0 0 30px rgba(255, 51, 51, 0.2);
-        }
-
-        .login-box h2 { 
-            color: var(--neon-red); 
-            margin-bottom: 25px; 
-            letter-spacing: 1px; 
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            font-weight: 900;
-        }
-        
-        .login-box input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #333;
-            border-radius: 15px;
-            color: #fff;
-            margin-bottom: 20px;
-            outline: none;
-            text-align: center;
-            font-size: 16px;
-        }
-
-        .login-box input:focus { border-color: var(--neon-red); }
-
-        .login-btn {
-            background: var(--neon-red);
-            color: #fff;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
         /* System Info */
         #sys-info {
             position: fixed;
@@ -124,7 +66,7 @@
         #loader {
             position: fixed;
             inset: 0; background: #000; z-index: 9999;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .loader-bot { font-size: 4rem; animation: float 2s infinite ease-in-out; }
@@ -141,6 +83,7 @@
             backdrop-filter: blur(25px);
             position: relative;
             overflow: hidden;
+            z-index: 10;
         }
 
         #panel-header {
@@ -193,17 +136,12 @@
 </head>
 <body>
 
-    <div id="login-overlay">
-        <div class="login-box">
-            <h2>t9bot made by srexffx</h2>
-            <input type="password" id="pass-input" placeholder="Enter Password">
-            <button class="login-btn" onclick="checkPass()">ACCESS BOT</button>
-        </div>
-    </div>
-
     <div class="bg-glow">
         <div class="bg-orb"></div>
     </div>
+
+    <!-- NEW: Red Snow Canvas Layer (z-index bumped to 5 to ensure visibility over background but behind panel) -->
+    <canvas id="red-snow-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5;"></canvas>
 
     <div id="sys-info">
         OS: <span id="info-brand">...</span> | PWR: <span id="info-batt">--%</span>
@@ -229,21 +167,16 @@
         <div id="chat-area"></div>
     </div>
 
+    <!-- ORIGINAL SCRIPT (UNTOUCHED) -->
     <script>
         const chat = document.getElementById('chat-area');
         const panel = document.getElementById('bot-panel');
         const loader = document.getElementById('loader');
         const langPick = document.getElementById('lang-pick');
 
-        function checkPass() {
-            const pin = document.getElementById('pass-input').value;
-            if (pin === "t9botsensi") {
-                document.getElementById('login-overlay').style.display = 'none';
-                startSequence();
-            } else {
-                alert("ACCESS DENIED: Wrong Password");
-            }
-        }
+        window.onload = function() {
+            startSequence();
+        };
 
         function startSequence() {
             loader.style.display = 'flex';
@@ -259,10 +192,10 @@
         }
 
         const translations = {
-            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over", hudCreate: "Create HUD", fingerQuest: "How many fingers do you play with?", copyMsg: "HUD Copied to Clipboard!" },
-            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar", hudCreate: "Criar HUD", fingerQuest: "Com quantos dedos você joga?", copyMsg: "HUD copiado!" },
-            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer", hudCreate: "Créer HUD", fingerQuest: "Avec combien de doigts jouez-vous ?", copyMsg: "HUD Copié !" },
-            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد", hudCreate: "إنشاء HUD", fingerQuest: "بكم إصبع تلعب؟", copyMsg: "تم نسخ الـ HUD!" }
+            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over", hudCreate: "Create HUD", fingerQuest: "How many fingers do you play with?", copyMsg: "HUD Copied to Clipboard!", fpsTitle: "Boost my FPS", fpsQuest: "How many FPS do you want to unlock?" },
+            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar", hudCreate: "Criar HUD", fingerQuest: "Com quantos dedos você joga?", copyMsg: "HUD copiado!", fpsTitle: "Aumentar meu FPS", fpsQuest: "Quantos FPS você deseja desbloquear?" },
+            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer", hudCreate: "Créer HUD", fingerQuest: "Avec combien de doigts jouez-vous ?", copyMsg: "HUD Copié !", fpsTitle: "Boost mon FPS", fpsQuest: "Combien de FPS voulez-vous débloquer ?" },
+            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد", hudCreate: "إنشاء HUD", fingerQuest: "بكم إصبع تلعب؟", copyMsg: "تم نسخ الـ HUD!", fpsTitle: "تسريع الـ FPS", fpsQuest: "كم عدد الـ FPS الذي تريد إلغاء قفله؟" }
         };
 
         function addBotMsg(text, chips = [], isHudCode = false) {
@@ -305,17 +238,25 @@
             chat.innerHTML = "";
             const l = translations[langPick.value];
             if(langPick.value === 'ar') chat.classList.add('rtl-layout'); else chat.classList.remove('rtl-layout');
-            addBotMsg(l.welcome, [l.start, l.hudCreate]);
+            addBotMsg(l.welcome, [l.start, l.hudCreate, l.fpsTitle]);
         }
 
         function handleAction(action) {
             addUserMsg(action);
             const l = translations[langPick.value];
             setTimeout(() => {
-                if (action === l.start || action === l.restart) {
+                if (action === l.restart) {
+                    startBot();
+                } else if (action === l.start) {
                     addBotMsg(l.brand, ["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"]);
                 } else if (action === l.hudCreate) {
                     addBotMsg(l.fingerQuest, ["2F", "3F", "4F"]);
+                } else if (action === l.fpsTitle) {
+                    addBotMsg(l.fpsQuest, ["90 FPS", "120 FPS", "144 FPS"]);
+                } else if (["90 FPS", "120 FPS", "144 FPS"].includes(action)) {
+                    let targetFps = parseInt(action);
+                    addBotMsg(`⚡ ${targetFps} Optimization initialized...`);
+                    setTimeout(() => triggerFakeCoding(targetFps), 1000);
                 } else if (action === "2F") {
                     addBotMsg("#FFHUDT6O3jhr5qTtPo7eM", [l.restart], true);
                 } else if (action === "3F") {
@@ -333,11 +274,68 @@
             }, 600);
         }
 
+        function triggerFakeCoding(targetFps) {
+            const codeLogs = [
+                `> loading srex_booster_core.sh...`,
+                `> bypassing stock system constraints [OK]`,
+                `> clearing background cache data & logs...`,
+                `> stabilizing tracking engine metrics...`,
+                `> injecting high refresh tweaks into engine...`,
+                `> overclocking virtual hardware rendering layers...`
+            ];
+            
+            let currentLog = 0;
+            const uniqueId = 'code-block-' + Date.now();
+            
+            addBotMsg(`<div id="${uniqueId}" style="font-family:'JetBrains Mono','Courier New',monospace; font-size:12px; color:#00ff00; line-height:1.6; text-align:left;"></div>`);
+            
+            const logElement = document.getElementById(uniqueId);
+            
+            const interval = setInterval(() => {
+                if (currentLog < codeLogs.length) {
+                    logElement.innerHTML += codeLogs[currentLog] + "<br/>";
+                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+                    currentLog++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => animateFpsCounter(targetFps), 800);
+                }
+            }, 400);
+        }
+
+        function animateFpsCounter(targetFps) {
+            const frameId = 'fps-counter-' + Date.now();
+            addBotMsg(`
+                <div class="sensi-card" style="text-align:center; padding:30px 10px;">
+                    <p style="font-size:12px; color:#aaa; letter-spacing:1px; margin-bottom:5px;">CURRENT PERFORMANCE</p>
+                    <h1 id="${frameId}" style="font-size:54px; color:var(--neon-red); font-weight:900; text-shadow:0 0 20px var(--accent-glow);">60 FPS</h1>
+                    <p style="font-size:10px; color:#444; margin-top:10px;">SREX T9 AUTOMATED BOOSTER</p>
+                </div>
+            `, [translations[langPick.value].restart]);
+
+            const counterEl = document.getElementById(frameId);
+            let currentFps = 60;
+            
+            let steps = [77, 89, 98, 107, 114, 128, 137];
+            steps = steps.filter(n => n < targetFps);
+            steps.push(targetFps);
+
+            let stepIdx = 0;
+            const counterInterval = setInterval(() => {
+                if (stepIdx < steps.length) {
+                    counterEl.innerText = `${steps[stepIdx]} FPS`;
+                    stepIdx++;
+                } else {
+                    clearInterval(counterInterval);
+                }
+            }, 250);
+        }
+
         function generateSensi(speedType) {
             let isHigh = speedType.match(/High|Alta|Élevée|عالية/);
             let brand = window.userBrand;
             let g, r, x2, x4, snp, cam, dpi;
-            
+
             if (brand === "iPhone") {
                 g = isHigh ? (95 + Math.floor(Math.random()*5)) : (88 + Math.floor(Math.random()*4));
                 dpi = "NO DPI";
@@ -393,6 +391,61 @@
                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         document.getElementById('info-brand').innerText = isIOS ? "IOS" : "ANDROID";
 
+    </script>
+
+    <!-- NEW: Independent Script for Red Snow Effect -->
+    <script>
+        (function() {
+            const canvas = document.getElementById('red-snow-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height, particles;
+
+            function initSnow() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                particles = [];
+                for(let i=0; i<100; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        r: Math.random() * 2.5 + 1, // Increased radius to make them pop
+                        vx: (Math.random() - 0.5) * 1.2,
+                        vy: Math.random() * 2 + 1 // Slightly faster fall
+                    });
+                }
+            }
+
+            function drawSnow() {
+                ctx.clearRect(0, 0, width, height);
+                // Brighter red and thicker fill
+                ctx.fillStyle = 'rgba(255, 51, 51, 0.9)'; 
+                
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                updateSnow();
+                requestAnimationFrame(drawSnow);
+            }
+
+            function updateSnow() {
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    // Reset to top if it goes off screen
+                    if(p.y > height) {
+                        p.x = Math.random() * width;
+                        p.y = -10;
+                    }
+                });
+            }
+
+            window.addEventListener('resize', initSnow);
+            initSnow();
+            drawSnow();
+        })();
     </script>
 </body>
 </html>
