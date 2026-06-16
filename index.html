@@ -5,153 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>t9bot 🤖 SREXFFX</title>
     <style>
-        :root {
-            --neon-red: #ff3333;
-            --accent-glow: rgba(255, 51, 51, 0.4);
-            --glass-bg: rgba(10, 10, 10, 0.85);
-            --user-gradient: linear-gradient(135deg, #ff4d4d 0%, #b30000 100%);
-            --panel-border: rgba(255, 255, 255, 0.1);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
-
-        body {
-            background: #000;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            color: #fff;
-        }
-
-        /* Animated Background */
-        .bg-glow {
-            position: fixed;
-            width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 50% 50%, #1a0505 0%, #000 100%);
-            z-index: -1;
-        }
-
-        .bg-orb {
-            position: absolute;
-            width: 300px; height: 300px;
-            background: var(--accent-glow);
-            filter: blur(100px);
-            border-radius: 50%;
-            animation: move 20s infinite alternate;
-        }
-
-        @keyframes move {
-            from { transform: translate(-50%, -50%); }
-            to { transform: translate(50%, 50%); }
-        }
-
-        /* System Info */
-        #sys-info {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            background: var(--glass-bg);
-            border: 1px solid var(--panel-border);
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            backdrop-filter: blur(10px);
-            z-index: 100;
-        }
+        :root { --neon-red: #ff3333; --accent-glow: rgba(255, 51, 51, 0.4); --glass-bg: rgba(10, 10, 10, 0.85); --user-gradient: linear-gradient(135deg, #ff4d4d 0%, #b30000 100%); --panel-border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #000; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff; }
+        .bg-glow { position: fixed; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, #1a0505 0%, #000 100%); z-index: -1; }
+        .bg-orb { position: absolute; width: 300px; height: 300px; background: var(--accent-glow); filter: blur(100px); border-radius: 50%; animation: move 20s infinite alternate; }
+        @keyframes move { from { transform: translate(-50%, -50%); } to { transform: translate(50%, 50%); } }
+        #sys-info { position: fixed; bottom: 20px; right: 20px; background: var(--glass-bg); border: 1px solid var(--panel-border); padding: 10px 15px; border-radius: 15px; font-family: monospace; font-size: 11px; backdrop-filter: blur(10px); z-index: 100; }
         #sys-info span { color: var(--neon-red); font-weight: bold; }
-
-        /* Loader */
-        #loader {
-            position: fixed;
-            inset: 0; background: #000; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.8s ease; }
         .loader-bot { font-size: 4rem; animation: float 2s infinite ease-in-out; }
         .loader-text { margin-top: 20px; font-weight: 900; letter-spacing: 8px; color: var(--neon-red); text-transform: uppercase; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
-        /* Bot Panel */
-        #bot-panel {
-            width: 95%; max-width: 420px; height: 85vh;
-            background: var(--glass-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 35px;
-            display: none; flex-direction: column;
-            backdrop-filter: blur(25px);
-            position: relative;
-            overflow: hidden;
-            z-index: 10;
-        }
-
-        #panel-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid var(--panel-border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .lang-selector select {
-            background: #1a1a1a; color: #fff; border: 1px solid #333;
-            border-radius: 10px; padding: 5px 10px; cursor: pointer;
-        }
-
+        #bot-panel { width: 95%; max-width: 420px; height: 85vh; background: var(--glass-bg); border: 1px solid var(--panel-border); border-radius: 35px; display: none; flex-direction: column; backdrop-filter: blur(25px); position: relative; overflow: hidden; z-index: 10; }
+        #panel-header { padding: 20px 25px; border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; align-items: center; }
+        .lang-selector select { background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 10px; padding: 5px 10px; cursor: pointer; }
         #chat-area { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
-        #chat-area::-webkit-scrollbar { display: none; }
-
-        .msg-wrapper { display: flex; flex-direction: column; max-width: 88%; animation: msgPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .msg-wrapper { display: flex; flex-direction: column; max-width: 88%; animation: msgPop 0.4s ease; }
         .bot-wrapper { align-self: flex-start; }
         .user-wrapper { align-self: flex-end; align-items: flex-end; }
         .rtl-layout { direction: rtl; }
-
         .label { font-size: 10px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; }
         .bot-label { color: #666; margin-left: 5px; }
         .user-label { color: #fff; background: var(--neon-red); padding: 2px 8px; border-radius: 6px; }
-
         .msg { padding: 14px 18px; border-radius: 22px; font-size: 15px; line-height: 1.5; }
         .bot-msg { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); }
         .user-msg { background: var(--user-gradient); }
-
         .hud-msg { cursor: pointer; border: 1px dashed var(--neon-red); text-align: center; font-weight: bold; background: rgba(255, 51, 51, 0.1) !important; }
-
         @keyframes msgPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
         .chip-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .chip { 
-            background: rgba(255, 51, 51, 0.05); border: 1px solid var(--neon-red); color: #fff; 
-            padding: 10px 20px; border-radius: 50px; font-size: 13px; cursor: pointer; 
-            font-weight: 600;
-        }
-
-        .sensi-card { 
-            background: #000; border: 1px solid var(--neon-red); border-radius: 20px; 
-            padding: 20px; margin-top: 15px; position: relative; overflow: hidden;
-        }
-        .row { display: flex; justify-content: space-between; margin: 8px 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .chip { background: rgba(255, 51, 51, 0.05); border: 1px solid var(--neon-red); color: #fff; padding: 10px 20px; border-radius: 50px; font-size: 13px; cursor: pointer; font-weight: 600; }
+        .sensi-card { background: #000; border: 1px solid var(--neon-red); border-radius: 20px; padding: 20px; margin-top: 15px; position: relative; overflow: hidden; }
+        .row { display: flex; justify-content: space-between; margin: 8px 0; font-family: monospace; font-size: 14px; }
         .val { color: var(--neon-red); font-weight: 900; font-size: 16px; }
-
         #reset-btn { background: transparent; border: 1px solid #333; color: #888; padding: 6px 15px; border-radius: 12px; font-size: 11px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <div class="bg-glow">
-        <div class="bg-orb"></div>
-    </div>
-
-    <!-- NEW: Red Snow Canvas Layer (z-index bumped to 5 to ensure visibility over background but behind panel) -->
-    <canvas id="red-snow-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5;"></canvas>
-
-    <div id="sys-info">
-        OS: <span id="info-brand">...</span> | PWR: <span id="info-batt">--%</span>
-    </div>
-
-    <div id="loader">
-        <div class="loader-bot">🤖</div>
-        <div class="loader-text">t9bot</div>
-    </div>
-
+    <div class="bg-glow"><div class="bg-orb"></div></div>
+    <div id="sys-info">OS: <span id="info-brand">DETECTING...</span> | PWR: <span id="info-batt">--%</span></div>
+    <div id="loader"><div class="loader-bot">🤖</div><div class="loader-text">t9bot</div></div>
     <div id="bot-panel">
         <div id="panel-header">
             <button id="reset-btn">🔄 RESET</button>
@@ -167,43 +60,34 @@
         <div id="chat-area"></div>
     </div>
 
-    <!-- ORIGINAL SCRIPT (UNTOUCHED) -->
     <script>
         const chat = document.getElementById('chat-area');
         const panel = document.getElementById('bot-panel');
         const loader = document.getElementById('loader');
         const langPick = document.getElementById('lang-pick');
 
-        window.onload = function() {
-            startSequence();
-        };
+        window.onload = function() { startSequence(); };
 
         function startSequence() {
-            loader.style.display = 'flex';
             setTimeout(() => {
                 loader.style.transform = 'translateY(-100%)';
                 loader.style.opacity = '0';
-                setTimeout(() => { 
-                    loader.style.display = 'none'; 
-                    panel.style.display = 'flex'; 
-                    startBot(); 
-                }, 600);
-            }, 1800);
+                setTimeout(() => { loader.style.display = 'none'; panel.style.display = 'flex'; startBot(); }, 600);
+            }, 1500);
         }
 
         const translations = {
-            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over", hudCreate: "Create HUD", fingerQuest: "How many fingers do you play with?", copyMsg: "HUD Copied to Clipboard!", fpsTitle: "Boost my FPS", fpsQuest: "How many FPS do you want to unlock?" },
-            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar", hudCreate: "Criar HUD", fingerQuest: "Com quantos dedos você joga?", copyMsg: "HUD copiado!", fpsTitle: "Aumentar meu FPS", fpsQuest: "Quantos FPS você deseja desbloquear?" },
-            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer", hudCreate: "Créer HUD", fingerQuest: "Avec combien de doigts jouez-vous ?", copyMsg: "HUD Copié !", fpsTitle: "Boost mon FPS", fpsQuest: "Combien de FPS voulez-vous débloquer ?" },
-            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد", hudCreate: "إنشاء HUD", fingerQuest: "بكم إصبع تلعب؟", copyMsg: "تم نسخ الـ HUD!", fpsTitle: "تسريع الـ FPS", fpsQuest: "كم عدد الـ FPS الذي تريد إلغاء قفله؟" }
+            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over", hudCreate: "Create HUD", fingerQuest: "How many fingers do you play with?", copyMsg: "HUD Copied!", fpsTitle: "Boost my FPS", fpsQuest: "How many FPS do you want to unlock?", noRecoilTitle: "No Recoil 🎯" },
+            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar", hudCreate: "Criar HUD", fingerQuest: "Com quantos dedos você joga?", copyMsg: "HUD copiado!", fpsTitle: "Aumentar meu FPS", fpsQuest: "Quantos FPS você deseja desbloquear?", noRecoilTitle: "No Recoil 🎯" },
+            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer", hudCreate: "Créer HUD", fingerQuest: "Avec combien de doigts jouez-vous ?", copyMsg: "HUD Copié !", fpsTitle: "Boost mon FPS", fpsQuest: "Combien de FPS voulez-vous débloquer?", noRecoilTitle: "No Recoil 🎯" },
+            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد", hudCreate: "إنشاء HUD", fingerQuest: "بكم إصبع تلعب؟", copyMsg: "تم نسخ الـ HUD!", fpsTitle: "تسريع الـ FPS", fpsQuest: "كم عدد الـ FPS الذي تريد إلغاء قفله؟", noRecoilTitle: "No Recoil 🎯" }
         };
 
         function addBotMsg(text, chips = [], isHudCode = false) {
             const isAr = langPick.value === 'ar';
             const wrapper = document.createElement('div');
             wrapper.className = `msg-wrapper bot-wrapper ${isAr ? 'rtl-layout' : ''}`;
-            let msgContent = `<div class="label bot-label">🤖 t9bot by @srexffx</div><div class="msg bot-msg ${isHudCode ? 'hud-msg' : ''}">${text}</div>`;
-            wrapper.innerHTML = msgContent;
+            wrapper.innerHTML = `<div class="label bot-label">🤖 t9bot by @srexffx</div><div class="msg bot-msg ${isHudCode ? 'hud-msg' : ''}">${text}</div>`;
             if (isHudCode) {
                 wrapper.querySelector('.hud-msg').onclick = () => {
                     navigator.clipboard.writeText(text).then(() => { alert(translations[langPick.value].copyMsg); });
@@ -215,14 +99,13 @@
                 container.className = `chip-container ${isAr ? 'rtl-layout' : ''}`;
                 chips.forEach(chipText => {
                     const btn = document.createElement('button');
-                    btn.className = 'chip';
-                    btn.innerText = chipText;
+                    btn.className = 'chip'; btn.innerText = chipText;
                     btn.onclick = () => { container.remove(); handleAction(chipText); };
                     container.appendChild(btn);
                 });
                 chat.appendChild(container);
             }
-            chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+            chat.scrollTop = chat.scrollHeight;
         }
 
         function addUserMsg(text) {
@@ -231,13 +114,13 @@
             wrapper.className = `msg-wrapper user-wrapper ${isAr ? 'rtl-layout' : ''}`;
             wrapper.innerHTML = `<div class="label user-label">👤 You</div><div class="msg user-msg">${text}</div>`;
             chat.appendChild(wrapper);
-            chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+            chat.scrollTop = chat.scrollHeight;
         }
 
         function startBot() {
             chat.innerHTML = "";
             const l = translations[langPick.value];
-            if(langPick.value === 'ar') chat.classList.add('rtl-layout'); else chat.classList.remove('rtl-layout');
+            chat.classList.toggle('rtl-layout', langPick.value === 'ar');
             addBotMsg(l.welcome, [l.start, l.hudCreate, l.fpsTitle]);
         }
 
@@ -245,24 +128,19 @@
             addUserMsg(action);
             const l = translations[langPick.value];
             setTimeout(() => {
-                if (action === l.restart) {
-                    startBot();
-                } else if (action === l.start) {
-                    addBotMsg(l.brand, ["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"]);
-                } else if (action === l.hudCreate) {
-                    addBotMsg(l.fingerQuest, ["2F", "3F", "4F"]);
-                } else if (action === l.fpsTitle) {
-                    addBotMsg(l.fpsQuest, ["90 FPS", "120 FPS", "144 FPS"]);
-                } else if (["90 FPS", "120 FPS", "144 FPS"].includes(action)) {
-                    let targetFps = parseInt(action);
-                    addBotMsg(`⚡ ${targetFps} Optimization initialized...`);
-                    setTimeout(() => triggerFakeCoding(targetFps), 1000);
-                } else if (action === "2F") {
-                    addBotMsg("#FFHUDT6O3jhr5qTtPo7eM", [l.restart], true);
-                } else if (action === "3F") {
-                    addBotMsg("#FFHUDT6O3jhr5qTtPo7eO", [l.restart], true);
-                } else if (action === "4F") {
-                    addBotMsg("#FFHUDT6O3jhr5qTtPo7eN", [l.restart], true);
+                if (action === l.restart) { startBot(); }
+                else if (action === l.start) { addBotMsg(l.brand, ["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"]); }
+                else if (action === l.hudCreate) { addBotMsg(l.fingerQuest, ["2F", "3F", "4F"]); }
+                else if (action === l.fpsTitle) { addBotMsg(l.fpsQuest, ["90 FPS", "120 FPS", "144 FPS"]); }
+                else if (["90 FPS", "120 FPS", "144 FPS"].includes(action)) {
+                    addBotMsg(`⚡ ${parseInt(action)} Optimization initialized...`);
+                    setTimeout(() => triggerFakeCoding(parseInt(action)), 1000);
+                } else if (action === l.noRecoilTitle) {
+                    addBotMsg("📡 Initializing anti-recoil data synchronization mechanics...");
+                    setTimeout(() => triggerNoRecoilCoding(), 1000);
+                } else if (["2F", "3F", "4F"].includes(action)) {
+                    const codes = {"2F": "#FFHUDT6O3jhr5qTtPo7eM", "3F": "#FFHUDT6O3jhr5qTtPo7eO", "4F": "#FFHUDT6O3jhr5qTtPo7eN"};
+                    addBotMsg(codes[action], [l.restart], true);
                 } else if (["iPhone", "Samsung", "Xiaomi", "Oppo", "Vivo", "Redmi"].includes(action)) {
                     window.userBrand = action;
                     const spd = langPick.value === 'en' ? ["High", "Slow"] : (langPick.value === 'br' ? ["Alta", "Lenta"] : (langPick.value === 'fr' ? ["Élevée", "Lente"] : ["عالية", "بطيئة"]));
@@ -275,177 +153,61 @@
         }
 
         function triggerFakeCoding(targetFps) {
-            const codeLogs = [
-                `> loading srex_booster_core.sh...`,
-                `> bypassing stock system constraints [OK]`,
-                `> clearing background cache data & logs...`,
-                `> stabilizing tracking engine metrics...`,
-                `> injecting high refresh tweaks into engine...`,
-                `> overclocking virtual hardware rendering layers...`
-            ];
-            
-            let currentLog = 0;
-            const uniqueId = 'code-block-' + Date.now();
-            
-            addBotMsg(`<div id="${uniqueId}" style="font-family:'JetBrains Mono','Courier New',monospace; font-size:12px; color:#00ff00; line-height:1.6; text-align:left;"></div>`);
-            
-            const logElement = document.getElementById(uniqueId);
-            
+            const logs = [`> loading srex_booster_core.sh...`, `> bypassing stock system constraints [OK]`, `> clearing background cache data...`, `> stabilizing tracking metrics...`, `> injecting tweaks...`, `> overclocking rendering layers...`];
+            let currentLog = 0; const id = 'c-' + Date.now();
+            addBotMsg(`<div id="${id}" style="font-family:monospace; font-size:12px; color:#00ff00; line-height:1.6; text-align:left;"></div>`);
+            const el = document.getElementById(id);
             const interval = setInterval(() => {
-                if (currentLog < codeLogs.length) {
-                    logElement.innerHTML += codeLogs[currentLog] + "<br/>";
-                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
-                    currentLog++;
-                } else {
-                    clearInterval(interval);
-                    setTimeout(() => animateFpsCounter(targetFps), 800);
-                }
-            }, 400);
+                if (currentLog < logs.length) { el.innerHTML += logs[currentLog++] + "<br/>"; chat.scrollTop = chat.scrollHeight; }
+                else { clearInterval(interval); setTimeout(() => animateFpsCounter(targetFps), 800); }
+            }, 300);
+        }
+
+        function triggerNoRecoilCoding() {
+            const logs = [`> fetching axis anchors...`, `> stability check [PASS]`, `> optimizing drag arrays...`, `> locking micro-vectors...`, `> running memory injection...`, `> norecoil it's applied successfully!`];
+            let currentLog = 0; const id = 'r-' + Date.now();
+            addBotMsg(`<div id="${id}" style="font-family:monospace; font-size:12px; color:#00ffff; line-height:1.6; text-align:left;"></div>`);
+            const el = document.getElementById(id);
+            const interval = setInterval(() => {
+                if (currentLog < logs.length) { el.innerHTML += logs[currentLog++] + "<br/>"; chat.scrollTop = chat.scrollHeight; }
+                else { clearInterval(interval); setTimeout(() => addBotMsg(`🎯 norecoil skills Alok,Kelly,D-bee,Laura`, [translations[langPick.value].restart]), 800); }
+            }, 300);
         }
 
         function animateFpsCounter(targetFps) {
-            const frameId = 'fps-counter-' + Date.now();
-            addBotMsg(`
-                <div class="sensi-card" style="text-align:center; padding:30px 10px;">
-                    <p style="font-size:12px; color:#aaa; letter-spacing:1px; margin-bottom:5px;">CURRENT PERFORMANCE</p>
-                    <h1 id="${frameId}" style="font-size:54px; color:var(--neon-red); font-weight:900; text-shadow:0 0 20px var(--accent-glow);">60 FPS</h1>
-                    <p style="font-size:10px; color:#444; margin-top:10px;">SREX T9 AUTOMATED BOOSTER</p>
-                </div>
-            `, [translations[langPick.value].restart]);
-
-            const counterEl = document.getElementById(frameId);
-            let currentFps = 60;
-            
-            let steps = [77, 89, 98, 107, 114, 128, 137];
-            steps = steps.filter(n => n < targetFps);
-            steps.push(targetFps);
-
-            let stepIdx = 0;
-            const counterInterval = setInterval(() => {
-                if (stepIdx < steps.length) {
-                    counterEl.innerText = `${steps[stepIdx]} FPS`;
-                    stepIdx++;
-                } else {
-                    clearInterval(counterInterval);
-                }
-            }, 250);
+            const id = 'f-' + Date.now(); const l = translations[langPick.value];
+            addBotMsg(`<div class="sensi-card" style="text-align:center; padding:30px 10px;"><p style="font-size:12px; color:#aaa; letter-spacing:1px; margin-bottom:5px;">CURRENT PERFORMANCE</p><h1 id="${id}" style="font-size:54px; color:var(--neon-red); font-weight:900;">60 FPS</h1><p style="font-size:10px; color:#444; margin-top:10px;">SREX T9 AUTOMATED BOOSTER</p></div>`, [l.noRecoilTitle, l.restart]);
+            const el = document.getElementById(id);
+            let steps = [77, 89, 98, 107, 114, targetFps].filter(n => n <= targetFps);
+            let idx = 0;
+            const counterInterval = setInterval(() => { if (idx < steps.length) { el.innerText = `${steps[idx++]} FPS`; } else { clearInterval(counterInterval); } }, 200);
         }
 
         function generateSensi(speedType) {
-            let isHigh = speedType.match(/High|Alta|Élevée|عالية/);
-            let brand = window.userBrand;
-            let g, r, x2, x4, snp, cam, dpi;
-
-            if (brand === "iPhone") {
-                g = isHigh ? (95 + Math.floor(Math.random()*5)) : (88 + Math.floor(Math.random()*4));
-                dpi = "NO DPI";
-            } else if (brand === "Samsung") {
-                g = isHigh ? (182 + Math.floor(Math.random()*15)) : (140 + Math.floor(Math.random()*15));
-                dpi = isHigh ? (720 + Math.floor(Math.random()*180)) : (411 + Math.floor(Math.random()*100));
-            } else if (brand === "Xiaomi" || brand === "Redmi") {
-                g = isHigh ? (190 + Math.floor(Math.random()*10)) : (155 + Math.floor(Math.random()*10));
-                dpi = isHigh ? (650 + Math.floor(Math.random()*150)) : (390 + Math.floor(Math.random()*50));
-            } else {
-                g = isHigh ? (170 + Math.floor(Math.random()*20)) : (125 + Math.floor(Math.random()*20));
-                dpi = isHigh ? (550 + Math.floor(Math.random()*250)) : (360 + Math.floor(Math.random()*90));
-            }
-
-            r = g - 5; x2 = g - 8; x4 = g - 12; 
-            snp = isHigh ? (100 + Math.floor(Math.random()*20)) : (60 + Math.floor(Math.random()*20));
-            cam = 200;
-
-            const labels = {
-                en: ["GENERAL", "RED DOT", "2X SCOPE", "4X SCOPE", "SNIPER", "FREE LOOK", "DPI"],
-                br: ["GERAL", "PONTO VERMELHO", "MIRA 2X", "MIRA 4X", "SNIPER", "OLHADINHA", "DPI"],
-                fr: ["GÉNÉRAL", "POINT ROUGE", "LUNETTE 2X", "LUNETTE 4X", "SNIPER", "REGARD LIBRE", "DPI"],
-                ar: ["عام", "نقطة حمراء", "عدسة 2X", "عدسة 4X", "قناص", "نظرة حرة", "DPI"]
-            }[langPick.value];
-            const l = translations[langPick.value];
-
-            addBotMsg(`🤖 **${brand.toUpperCase()} SETTINGS**
-                <div class="sensi-card">
-                    <div class="row"><span>${labels[0]}</span> <span class="val">${g}</span></div>
-                    <div class="row"><span>${labels[1]}</span> <span class="val">${r}</span></div>
-                    <div class="row"><span>${labels[2]}</span> <span class="val">${x2}</span></div>
-                    <div class="row"><span>${labels[3]}</span> <span class="val">${x4}</span></div>
-                    <div class="row"><span>${labels[4]}</span> <span class="val">${snp}</span></div>
-                    <div class="row"><span>${labels[5]}</span> <span class="val">${cam}</span></div>
-                    <div class="row"><span>${labels[6]}</span> <span class="val">${dpi}</span></div>
-                </div>
-                <p style="font-size:10px; text-align:center; margin-top:10px; color: #666;">Official SREX FF Config</p>`, [l.hudCreate, l.restart]);
+            let isHigh = speedType.match(/High|Alta|Élevée|عالية/), b = window.userBrand, g, dpi;
+            if (b === "iPhone") { g = isHigh ? 97 : 90; dpi = "NO DPI"; }
+            else if (b === "Samsung") { g = isHigh ? 190 : 145; dpi = isHigh ? 800 : 450; }
+            else if (b === "Xiaomi" || b === "Redmi") { g = isHigh ? 195 : 160; dpi = isHigh ? 720 : 410; }
+            else { g = isHigh ? 175 : 130; dpi = isHigh ? 600 : 400; }
+            
+            const labels = { en: ["GENERAL", "RED DOT", "2X SCOPE", "4X SCOPE", "SNIPER", "FREE LOOK", "DPI"], br: ["GERAL", "PONTO VERMELHO", "MIRA 2X", "MIRA 4X", "SNIPER", "OLHADINHA", "DPI"], fr: ["GÉNÉRAL", "POINT ROUGE", "LUNETTE 2X", "LUNETTE 4X", "SNIPER", "REGARD LIBRE", "DPI"], ar: ["عام", "نقطة حمراء", "عدسة 2X", "عدسة 4X", "قناص", "نظرة حرة", "DPI"] }[langPick.value];
+            
+            addBotMsg(`🤖 **${b.toUpperCase()} SETTINGS**<div class="sensi-card">` + 
+                `<div class="row"><span>${labels[0]}</span><span class="val">${g}</span></div>` +
+                `<div class="row"><span>${labels[1]}</span><span class="val">${g-5}</span></div>` +
+                `<div class="row"><span>${labels[2]}</span><span class="val">${g-8}</span></div>` +
+                `<div class="row"><span>${labels[3]}</span><span class="val">${g-12}</span></div>` +
+                `<div class="row"><span>${labels[4]}</span><span class="val">${isHigh?110:70}</span></div>` +
+                `<div class="row"><span>${labels[5]}</span><span class="val">200</span></div>` +
+                `<div class="row"><span>${labels[6]}</span><span class="val">${dpi}</span></div>` +
+                `</div>`, [translations[langPick.value].hudCreate, translations[langPick.value].restart]);
         }
 
         document.getElementById('reset-btn').onclick = startBot;
         langPick.onchange = startBot;
-
-        if (navigator.getBattery) {
-            navigator.getBattery().then(b => {
-                const up = () => document.getElementById('info-batt').innerText = Math.round(b.level * 100) + "%";
-                up(); b.onlevelchange = up;
-            });
-        } else {
-            document.getElementById('info-batt').innerText = "SECURED";
-        }
-
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        document.getElementById('info-brand').innerText = isIOS ? "IOS" : "ANDROID";
-
-    </script>
-
-    <!-- NEW: Independent Script for Red Snow Effect -->
-    <script>
-        (function() {
-            const canvas = document.getElementById('red-snow-canvas');
-            const ctx = canvas.getContext('2d');
-            let width, height, particles;
-
-            function initSnow() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-                particles = [];
-                for(let i=0; i<100; i++) {
-                    particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height,
-                        r: Math.random() * 2.5 + 1, // Increased radius to make them pop
-                        vx: (Math.random() - 0.5) * 1.2,
-                        vy: Math.random() * 2 + 1 // Slightly faster fall
-                    });
-                }
-            }
-
-            function drawSnow() {
-                ctx.clearRect(0, 0, width, height);
-                // Brighter red and thicker fill
-                ctx.fillStyle = 'rgba(255, 51, 51, 0.9)'; 
-                
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-                
-                updateSnow();
-                requestAnimationFrame(drawSnow);
-            }
-
-            function updateSnow() {
-                particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    // Reset to top if it goes off screen
-                    if(p.y > height) {
-                        p.x = Math.random() * width;
-                        p.y = -10;
-                    }
-                });
-            }
-
-            window.addEventListener('resize', initSnow);
-            initSnow();
-            drawSnow();
-        })();
+        const ua = navigator.userAgent.toLowerCase();
+        document.getElementById('info-brand').innerText = ua.includes("android") ? "ANDROID" : (ua.includes("iphone") ? "IOS" : "WEB-SYS");
+        if (navigator.getBattery) { navigator.getBattery().then(b => { const up = () => document.getElementById('info-batt').innerText = Math.round(b.level * 100) + "%"; up(); b.onlevelchange = up; }); }
     </script>
 </body>
 </html>
