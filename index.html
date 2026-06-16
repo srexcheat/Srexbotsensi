@@ -7,10 +7,32 @@
     <style>
         :root { --neon-red: #ff3333; --accent-glow: rgba(255, 51, 51, 0.4); --glass-bg: rgba(10, 10, 10, 0.85); --user-gradient: linear-gradient(135deg, #ff4d4d 0%, #b30000 100%); --panel-border: rgba(255, 255, 255, 0.1); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #000; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff; }
+        body { background: #000; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff; position: relative; }
         .bg-glow { position: fixed; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, #1a0505 0%, #000 100%); z-index: -1; }
         .bg-orb { position: absolute; width: 300px; height: 300px; background: var(--accent-glow); filter: blur(100px); border-radius: 50%; animation: move 20s infinite alternate; }
         @keyframes move { from { transform: translate(-50%, -50%); } to { transform: translate(50%, 50%); } }
+        
+        /* --- NEW RED SNOW EFFECT CSS --- */
+        .snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+        .snowflake { position: absolute; top: -10px; background: var(--neon-red); border-radius: 50%; filter: drop-shadow(0 0 3px var(--neon-red)); opacity: 0.8; animation: fall linear infinite; }
+        @keyframes fall {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(105vh) translateX(80px); opacity: 0; }
+        }
+        .snowflake:nth-child(1) { left: 10%; width: 4px; height: 4px; animation-duration: 6s; animation-delay: 0s; }
+        .snowflake:nth-child(2) { left: 25%; width: 6px; height: 6px; animation-duration: 9s; animation-delay: 1.5s; filter: blur(1px); }
+        .snowflake:nth-child(3) { left: 40%; width: 3px; height: 3px; animation-duration: 7s; animation-delay: 3s; }
+        .snowflake:nth-child(4) { left: 55%; width: 5px; height: 5px; animation-duration: 11s; animation-delay: 0.5s; }
+        .snowflake:nth-child(5) { left: 70%; width: 4px; height: 4px; animation-duration: 8s; animation-delay: 4s; }
+        .snowflake:nth-child(6) { left: 85%; width: 7px; height: 7px; animation-duration: 10s; animation-delay: 2s; filter: blur(1px); }
+        .snowflake:nth-child(7) { left: 15%; width: 5px; height: 5px; animation-duration: 8s; animation-delay: 5s; }
+        .snowflake:nth-child(8) { left: 45%; width: 3px; height: 3px; animation-duration: 12s; animation-delay: 1s; }
+        .snowflake:nth-child(9) { left: 65%; width: 6px; height: 6px; animation-duration: 6s; animation-delay: 2.5s; }
+        .snowflake:nth-child(10) { left: 95%; width: 4px; height: 4px; animation-duration: 9s; animation-delay: 6s; }
+        /* ---------------------------------- */
+
         #sys-info { position: fixed; bottom: 20px; right: 20px; background: var(--glass-bg); border: 1px solid var(--panel-border); padding: 10px 15px; border-radius: 15px; font-family: monospace; font-size: 11px; backdrop-filter: blur(10px); z-index: 100; }
         #sys-info span { color: var(--neon-red); font-weight: bold; }
         #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.8s ease; }
@@ -43,6 +65,20 @@
 </head>
 <body>
     <div class="bg-glow"><div class="bg-orb"></div></div>
+    
+    <div class="snow-container">
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+        <div class="snowflake"></div>
+    </div>
+
     <div id="sys-info">OS: <span id="info-brand">DETECTING...</span> | PWR: <span id="info-batt">--%</span></div>
     <div id="loader"><div class="loader-bot">🤖</div><div class="loader-text">t9bot</div></div>
     <div id="bot-panel">
@@ -76,11 +112,12 @@
             }, 1500);
         }
 
+        /* --- UPDATED TRANSLATIONS FOR BOOST FPS & NO RECOIL --- */
         const translations = {
-            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over", hudCreate: "Create HUD", fingerQuest: "How many fingers do you play with?", copyMsg: "HUD Copied!", fpsTitle: "Boost my FPS", fpsQuest: "How many FPS do you want to unlock?", noRecoilTitle: "No Recoil 🎯" },
-            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar", hudCreate: "Criar HUD", fingerQuest: "Com quantos dedos você joga?", copyMsg: "HUD copiado!", fpsTitle: "Aumentar meu FPS", fpsQuest: "Quantos FPS você deseja desbloquear?", noRecoilTitle: "No Recoil 🎯" },
-            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer", hudCreate: "Créer HUD", fingerQuest: "Avec combien de doigts jouez-vous ?", copyMsg: "HUD Copié !", fpsTitle: "Boost mon FPS", fpsQuest: "Combien de FPS voulez-vous débloquer?", noRecoilTitle: "No Recoil 🎯" },
-            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد", hudCreate: "إنشاء HUD", fingerQuest: "بكم إصبع تلعب؟", copyMsg: "تم نسخ الـ HUD!", fpsTitle: "تسريع الـ FPS", fpsQuest: "كم عدد الـ FPS الذي تريد إلغاء قفله؟", noRecoilTitle: "No Recoil 🎯" }
+            en: { welcome: "Welcome to t9bot! I'm here to give you the best sensi for every type of phones.", start: "Create my sensi", brand: "What is your phone brand?", speed: "Do you want High or Slow sensitivity?", applying: "Applying settings...", restart: "Start Over", hudCreate: "Create HUD", fingerQuest: "How many fingers do you play with?", copyMsg: "HUD Copied!", fpsTitle: "Boost FPS & No Recoil", fpsQuest: "How many FPS do you want to unlock?", noRecoilTitle: "No Recoil 🎯" },
+            br: { welcome: "Bem-vindo ao t9bot! Estou aqui para dar a melhor sensi para todos os tipos de celulares.", start: "Criar minha sensi", brand: "Qual é a marca do seu celular?", speed: "Você quer sensibilidade Alta ou Lenta?", applying: "Aplicando configurações...", restart: "Recomeçar", hudCreate: "Criar HUD", fingerQuest: "Com quantos dedos você joga?", copyMsg: "HUD copiado!", fpsTitle: "Boost FPS e No Recoil", fpsQuest: "Quantos FPS você deseja desbloquear?", noRecoilTitle: "No Recoil 🎯" },
+            fr: { welcome: "Bienvenue sur t9bot ! Je suis là pour vous donner la meilleure sensi pour tous types de téléphones.", start: "Créer ma sensi", brand: "Quelle est la marque de votre téléphone ?", speed: "Voulez-vous une sensibilité Élevée ou Lente ?", applying: "Application des paramètres...", restart: "Recommencer", hudCreate: "Créer HUD", fingerQuest: "Avec combien de doigts jouez-vous ?", copyMsg: "HUD Copié !", fpsTitle: "Boost FPS & No Recoil", fpsQuest: "Combien de FPS voulez-vous débloquer?", noRecoilTitle: "No Recoil 🎯" },
+            ar: { welcome: "مرحباً بك في t9bot! أنا هنا لأعطيك أفضل حساسية لكل أنواع الهواتف.", start: "إنشاء الحساسية الخاصة بي", brand: "ما هو نوع هاتفك؟", speed: "هل تريد حساسية عالية أم بطيئة؟", applying: "جاري تطبيق الإعدادات...", restart: "البدء من جديد", hudCreate: "إنشاء HUD", fingerQuest: "بكم إصبع تلعب؟", copyMsg: "تم نسخ الـ HUD!", fpsTitle: "تسريع FPS و No Recoil", fpsQuest: "كم عدد الـ FPS الذي تريد إلغاء قفله؟", noRecoilTitle: "No Recoil 🎯" }
         };
 
         function addBotMsg(text, chips = [], isHudCode = false) {
